@@ -27,10 +27,6 @@ if not defined CP_ROOT (
 if not defined CP_BACKEND_PORT set "CP_BACKEND_PORT=8420"
 if not defined CP_FRONTEND_PORT set "CP_FRONTEND_PORT=5173"
 if not defined TALOS_HOME set "TALOS_HOME=%USERPROFILE%\.talos"
-if not defined NPM_EXE (
-    echo [error] NPM_EXE not set. Edit talos-cp-config.bat to point at your npm.cmd.
-    exit /b 1
-)
 
 set "TALOS_VENV=%TALOS_ROOT%\.venv"
 set "CP_BACKEND_DIR=%CP_ROOT%\backend"
@@ -52,9 +48,9 @@ if errorlevel 1 (
     echo [error] node not found in PATH. Install Node.js and try again.
     exit /b 1
 )
-if not exist "%NPM_EXE%" (
-    echo [error] NPM_EXE points at a file that doesn't exist: %NPM_EXE%
-    echo         Edit talos-cp-config.bat with the correct path to npm.cmd.
+where npm >nul 2>&1
+if errorlevel 1 (
+    echo [error] npm not found in PATH.
     exit /b 1
 )
 where curl >nul 2>&1
@@ -87,7 +83,7 @@ if not exist "%CP_BACKEND_VENV%\Scripts\python.exe" (
 if not exist "%CP_FRONTEND_DIR%\node_modules" (
     echo [setup] Installing frontend dependencies ^(npm install^)
     pushd "%CP_FRONTEND_DIR%"
-    call "%NPM_EXE%" install
+    call npm install
     popd
 ) else (
     echo [setup] Frontend node_modules OK
@@ -100,7 +96,7 @@ set "VITE_API_BASE=http://127.0.0.1:%CP_BACKEND_PORT%"
 :: ---- 4. Frontend hidden in background, output only to log files ----
 echo [run] Starting frontend in background (logs -^> %FRONTEND_LOG%)
 if exist "%PID_FILE%" del "%PID_FILE%"
-powershell -NoProfile -Command "$p = Start-Process -FilePath '%NPM_EXE%' -ArgumentList 'run','dev','--','--port','%CP_FRONTEND_PORT%','--strictPort' -WorkingDirectory '%CP_FRONTEND_DIR%' -WindowStyle Hidden -RedirectStandardOutput '%FRONTEND_LOG%' -RedirectStandardError '%FRONTEND_ERR_LOG%' -PassThru; $p.Id | Out-File -Encoding ascii '%PID_FILE%'"
+powershell -NoProfile -Command "$p = Start-Process -FilePath 'npm.cmd' -ArgumentList 'run','dev','--','--port','%CP_FRONTEND_PORT%','--strictPort' -WorkingDirectory '%CP_FRONTEND_DIR%' -WindowStyle Hidden -RedirectStandardOutput '%FRONTEND_LOG%' -RedirectStandardError '%FRONTEND_ERR_LOG%' -PassThru; $p.Id | Out-File -Encoding ascii '%PID_FILE%'"
 
 :: ---- 5. Open browser once frontend responds (detached watcher) ----
 start "" /min cmd /c "%~f0" openWhenReady
