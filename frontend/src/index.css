@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+}
+
+/* Monospace text — command strings, UUIDs, request/response bodies, logs. */
+.mono {
+  font-family: "IBM Plex Mono", "JetBrains Mono", monospace;
+}
+
+/* Standard card/container surface used for tables, log entries, grouped content. */
+.panel {
+  @apply rounded-lg border border-base-300 bg-base-100;
+}
+
+/* Denser table variant used by DataTable so operators can see more rows at once. */
+.table-tight :where(th, td) {
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+/* Small clickable UUID pill — click to copy full value. */
+.uuid-chip {
+  @apply mono inline-flex items-center rounded px-1.5 py-0.5 text-xs bg-base-200 border border-base-300;
+  cursor: pointer;
+}
+
+/* Slim scrollbars, since this is a dense, table-heavy operator tool. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--fallback-bc, oklch(var(--bc) / 1)) / 0.15);
+  border-radius: 8px;
+}

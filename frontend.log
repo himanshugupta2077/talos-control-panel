@@ -1,0 +1,14 @@
+
+> talos-control-panel@1.0.0 dev
+> vite --port 5173 --strictPort
+
+
+  VITE v5.4.21  ready in 124 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+
+🌼   daisyUI 4.12.24
+├─ ✔︎ 2 themes added		https://daisyui.com/docs/themes
+╰─ ❤︎ Support daisyUI project:	https://opencollective.com/daisyui
+
